@@ -1,59 +1,109 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Login } from "./Login";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
 export const Signup = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    const userInfo = {
+      fullname: data.fullname,
+      email: data.email,
+      password: data.password,
+    };
+    await axios
+      .post("http://localhost:4001/user/signup", userInfo)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          alert("Signup successfully");
+          navigate(from, { replace: true });
+        }
+        localStorage.setItem("Users", JSON.stringify(res.data.userInfo));
+      })
+      .catch((err) => {
+        if (err.response) {
+          console.log(err);
+          alert("Error: " + err.response.data.message);
+        }
+      });
+  };
+
   return (
-    <div>
-      <div className="flex h-screen items-center justify-center ">
-        <div
-          id="my_modal_3"
-          className=" flex rounded-lg border-[1px]  shadow-lg shadow-slate-100 hover:bg-slate-800"
-        >
-          <div className="px-8 py-10 ">
-            <form method="div">
-              <div className="flex justify-between">
-                <h3 className="font-bold text-lg">SignUp</h3>
-                <Link to= "/">
-                  <button className="btn btn-sm btn-circle btn-ghost">✕</button>
-                </Link>
-              </div>
-              {/* if there is a button in form, it will close the modal */}
+    <div className="w-full h-screen bg-gray-950 ">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        method="dialog"
+        className="border-2"
+      >
+        <div className="top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 absolute bg-zinc-800 border-2 rounded-lg px-6 py-3 z-999">
+          <div className="flex justify-between items-center font-bold text-lg ">
+            <h3>SignUp</h3>
+            <Link to="/">
+              <button className="btn btn-sm btn-circle btn-ghost right-2 top-2 bg-red-800">
+                ✕
+              </button>
+            </Link>
+          </div>
+          <div>
+            <div className="flex flex-col my-5 gap-1">
+              <span>Name</span>
+              <input
+                type="text"
+                placeholder="enter name"
+                {...register("fullname", { require: true })}
+              />
+            </div>
 
-              <div className="text-white">
-                <div className="flex flex-col my-5">
-                  <span className="mb-2">Name</span>
-                  <input type="text" required placeholder="enter name" />
-                </div>
+            <div className="flex flex-col my-5 gap-1">
+              <span>Email</span>
+              <input
+                type="email"
+                placeholder="enter email"
+                {...register("email", { require: true })}
+              />
+            </div>
 
-                <div className="flex flex-col my-5">
-                  <span className="mb-2">Email</span>
-                  <input type="email" required placeholder="enter email" />
-                </div>
+            <div className="flex flex-col my-5 gap-1">
+              <span>Password</span>
+              <input
+                type="text"
+                placeholder="enter password"
+                {...register("password", { require: true })}
+              />
+            </div>
 
-                <div className="flex flex-col my-5 ">
-                  <span className="mb-2">Password</span>
-                  <input type="value" required placeholder="password" />
-                </div>
-
-                <div className="flex justify-between gap-10 mt-10">
-                  <button className="bg-pink-500 py-1 px-2 rounded-md">
-                    SignUp
-                  </button>
-                  <p>
-                    Have account?{" "}
-                    <Link
-                      to="/"
-                      className="underline text-blue-500 cursor-pointer"
-                    >
-                      LogIn
-                    </Link>{" "}
-                  </p>
-                </div>
-              </div>
-            </form>
+            <div className="flex gap-32">
+              <button className="py-1 bg-lime-800 px-2 rounded-md hover:bg-lime-600">
+                SignUp
+              </button>
+              <p>
+                Have account?{" "}
+                <button
+                  className="underline text-blue-500 cursor-pointer"
+                  onClick={() =>
+                    document.getElementById("my_modal_3").showModal()
+                  }
+                >
+                  {" "}
+                  Login
+                </button>{" "}
+                <Login />
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

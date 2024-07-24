@@ -7,7 +7,7 @@ export const Banner = () => {
       <div className="left w-1/2">
         <div className="text-5xl pb-12">
           <h1>Hello, welcome here to learn</h1>
-          <h1>
+          <h1>s
             something <span>new everyday</span>{" "}
           </h1>
         </div>
@@ -32,7 +32,7 @@ export const Banner = () => {
           </svg>
           <input type="text" className="grow" placeholder="Email" />
         </label>
-        <button className="btn btn-secondary my-10">Secondary</button>
+        <button className="btn btn-secondary my-10">Get Started</button>
       </div>
 
       <div className="right w-1/2">

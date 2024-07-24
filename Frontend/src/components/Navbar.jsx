@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Login } from "./Login";
+import { useAuth } from "../context/AuthProvider";
+
+import Logout from "./Logout";
 
 const Navbar = () => {
+  const [authUser, setAuthUser] = useAuth();
+
   const [sticky, setSticky] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
@@ -39,9 +44,14 @@ const Navbar = () => {
   );
 
   return (
-    <div className={`z-[999] ${sticky? "shadow-md bg-blue-300 duration-300 transition-all ease-in-out": ""} `}>
+    <div
+      className={`z-[999] ${
+        sticky
+          ? "shadow-md bg-blue-300 duration-300 transition-all ease-in-out"
+          : ""
+      } `}
+    >
       <div className="navbar bg-slate-500 fixed">
-
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -72,9 +82,7 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">
-            {navItems}
-          </ul>
+          <ul className="menu menu-horizontal px-1">{navItems}</ul>
         </div>
 
         <div className="join">
@@ -91,11 +99,19 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div>
-          <a className="bg-black px-3 py-2 ml-2 rounded-md cursor-pointer" onClick={ ()=> document.getElementById("my_modal_3").showModal()}>Login</a>
-          <Login/>
-        </div>
-
+        {authUser ? (
+          <Logout />
+        ) : (
+          <div className="">
+            <a
+              className="bg-black px-3 py-2 ml-2 rounded-md hover:bg-slate-800 duration-300 cursor-pointer"
+              onClick={() => document.getElementById("my_modal_3").showModal()}
+            >
+              Login
+            </a>
+            <Login />
+          </div>
+        )}
       </div>
     </div>
   );

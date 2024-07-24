@@ -1,9 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Card from './Card'
-import list from "../../public/list.json"
-import {Link} from "react-router-dom"
+// import list from "../../public/list.json"
+import {Link, redirect} from "react-router-dom"
+import axios from 'axios'
 
 export const Course = () => {
+  // backend ki api ko call karege
+  const [book, setBook] = useState([])
+  useEffect(() => {
+    const getBook = async()=>{
+      try {
+        const res = await axios.get("http://localhost:4001/book")   // api ka URL
+        console.log(res.data)
+        setBook(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getBook();
+  }, [])
+
+
+
   return (
     <>
     <div className='max-w-screen-2xl'>
@@ -16,7 +34,7 @@ export const Course = () => {
         </div>
         <div className='flex flex-wrap justify-center gap-8 mt-10 z-50'>
             {
-               list.map((item)=>(
+               book.map((item)=>(
                 <Card key={item.id} item={item} />
                ) )
             }
